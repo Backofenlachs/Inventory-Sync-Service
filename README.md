@@ -4,8 +4,8 @@
 
 Dieses Projekt simuliert eine typische Integrationsaufgabe:
 
-Ein Warenwirtschaftssystem (ERP) speichert Produktdaten in einer Datenbank.  
-Ein E-Shop verwaltet seine Produkte über eine REST-API.
+- Ein Warenwirtschaftssystem (ERP) speichert Produktdaten in einer Datenbank.
+- Ein E-Shop verwaltet seine Produkte über eine REST-API.
 
 Ziel ist es, einen Sync-Service zu entwickeln, der:
 
@@ -15,7 +15,7 @@ Ziel ist es, einen Sync-Service zu entwickeln, der:
 - Änderungen protokolliert
 - Fehlerbehandlung implementiert
 
-Zeitbudget: **2 Tage**
+**Zeitbudget:** 2 Tage
 
 ---
 
@@ -26,7 +26,8 @@ Viele Unternehmen nutzen:
 - Ein externes Warenwirtschaftssystem
 - Einen separaten Online-Shop
 
-Die zentrale Herausforderung:
+Typische Herausforderungen:
+
 - Lagerbestand synchronisieren
 - Preisänderungen übernehmen
 - Neue Produkte anlegen
@@ -35,7 +36,7 @@ Die zentrale Herausforderung:
 
 Dieses Projekt simuliert diese Integration in vereinfachter Form.
 
-Gleichzeitig dient es als:
+Es dient gleichzeitig als:
 
 - Demonstration meines technischen Verständnisses für Systemintegration
 - Nachweis meiner Fähigkeit zur schnellen Einarbeitung in neue Projektkontexte
@@ -48,188 +49,136 @@ Gleichzeitig dient es als:
 
 ### Komponenten
 
-1. ERP-Datenbank (MySQL)
-2. Sync-Service (PHP Backend-Logik)
-3. Simulierte Shop-REST-API (PHP Endpoint)
-4. Logging-Komponente
+- ERP-Datenbank (MySQL)
+- Sync-Service (PHP Backend-Logik)
+- Simulierte Shop-REST-API (PHP Endpoint)
+- Logging-Komponente
 
----
-
-## Systemdiagramm (konzeptionell)
-
-ERP DB → Sync Service → REST API → Shop-System
+### Systemfluss
+ERP DB --> Sync Service --> REST API --> Shop-System
 
 ---
 
 ## Geplante Ordnerstruktur
 
-
-graph TD
-    root["inventory-sync/"]
-    root --> config["config/"]
-    config --> db["database.php"]
-
-    root --> src["src/"]
-    src --> repo["Repository/"]
-    repo --> inv["InventoryRepository.php"]
-    src --> service["Service/"]
-    service --> sync["SyncService.php"]
-    src --> http["Http/"]
-    http --> apiClient["ApiClient.php"]
-
-    root --> public["public/"]
-    public --> syncphp["sync.php"]
-    public --> api["api/"]
-    api --> products["products.php"]
-
-    root --> logs["logs/"]
-    logs --> logfile["sync.log"]
-
-    root --> schema["schema.sql"]
-    root --> readme["README.md"]
-
+```text
 inventory-sync/
-
-│
-
 ├── config/
-
-│ └── database.php
-
+│   └── database.php              # Datenbankverbindung & Konfiguration
 │
-
 ├── src/
-
-│ ├── Repository/
-
-│ │ └── InventoryRepository.php
-
-│ ├── Service/
-
-│ │ └── SyncService.php
-
-│ └── Http/
-
-│ └── ApiClient.php
-
+│   ├── Repository/
+│   │   └── InventoryRepository.php  # Zugriff auf die Inventory-Datenbank (CRUD)
+│   │
+│   ├── Service/
+│   │   └── SyncService.php          # Business-Logik für den API-Sync
+│   │
+│   └── Http/
+│       └── ApiClient.php            # Kommunikation mit externer API
 │
 ├── public/
-
-│ ├── sync.php
-
-│ └── api/
-
-│ └── products.php
-
+│   ├── sync.php                 # Startpunkt für manuellen Sync
+│   │
+│   └── api/
+│       └── products.php         # REST-Endpoint für Produktdaten
 │
-
 ├── logs/
-
-│ └── sync.log
-
+│   └── sync.log                 # Log-Datei für Synchronisationsprozesse
 │
-├── schema.sql
+├── schema.sql                   # Datenbankschema
+└── README.md                    # Projektdokumentation
+```
 
-└── README.md
 
 ---
 
 ## Datenbankschema
 
-### inventory_system (simuliertes ERP)
+### Tabelle: `inventory_system` (simuliertes ERP)
 
-- id (INT, PK)
-- sku (VARCHAR)
-- name (VARCHAR)
-- stock (INT)
-- price (DECIMAL)
-- last_updated (TIMESTAMP)
+- `id` (INT, Primary Key)
+- `sku` (VARCHAR)
+- `name` (VARCHAR)
+- `stock` (INT)
+- `price` (DECIMAL)
+- `last_updated` (TIMESTAMP)
 
 ---
 
-## REST-API (simuliert Shop)
+## REST-API (simulierter Shop)
 
-### Endpoint:
+### Endpoint
+
+```
 POST /api/products
+```
 
-### JSON Payload:
+### JSON Payload
+
+```json
 {
   "sku": "PLANT-001",
   "name": "Lavandula angustifolia",
   "stock": 25,
   "price": 8.90
 }
+```
 
-### Response:
-- 201 Created (neues Produkt)
-- 200 OK (Produkt aktualisiert)
-- 400 Bad Request
-- 500 Internal Server Error
+### Response Codes
+
+ - **201 Created** – Neues Produkt angelegt
+ - **200 OK** – Bestehendes Produkt aktualisiert
+ - **400 Bad Request** – Validierungsfehler
+ - **500 Internal Server Error** – Serverfehler
 
 ---
 
-## Kernlogik des Sync-Services
+## Sync-Logic (High-Level)
 
 Für jedes ERP-Produkt:
 
-1. JSON erstellen
-2. API-Request via cURL senden
-3. Response prüfen
-4. Logging durchführen
-5. Statistik erfassen (created, updated, failed)
+ 1. JSON erzeugen
+ 2. API-Request via cURL senden
+ 3. Response prüfen
+ 4. Logging durchführen
+ 5. Statistik erfassen (created, updated, failed)
 
 ---
 
-# Entwicklungsplan
+## Entwicklungsplan
 
-## Tag 1 – Fundament & Sync
+### Tag 1 - Fundament & Sync
 
-Ziel: Funktionierende DB → REST Synchronisation
-
-- [ ] Projektstruktur anlegen
-- [ ] Datenbankschema definieren
-- [ ] Testdaten einfügen
-- [ ] PDO-Datenbankverbindung implementieren
-- [ ] InventoryRepository erstellen
-- [ ] API Endpoint (/api/products) erstellen
-- [ ] ApiClient (cURL Wrapper) implementieren
-- [ ] SyncService implementieren
-- [ ] Erste erfolgreiche Synchronisation testen
-
-Ergebnis Tag 1:
-→ Produkte werden erfolgreich per REST synchronisiert.
+**Ziel:** Funktionierende DB --> REST Synchronisation
+ - [ ] Projektstruktur anlegen
+ - [ ] Datenbankschema definieren
+ - [ ] Testdaten einfügen
+ - [ ] PDO-Datenbankverbindung implementieren
+ - [ ] Inventory Repository erstellen
+ - [ ] API Endpoint (/api/products) erstellen
+ - [ ] ApiClient (cURL rapper) implementieren
+ - [ ] SyncService implementieren
+ - [ ] Erste erfolgreiche Synchronisation testen
 
 ---
 
-## Tag 2 – Robustheit & Professionalität
+### Tag 2 - Robustheit & Professionalität
 
-Ziel: Produktionsnahes Verhalten simulieren
-
-- [ ] Fehlerbehandlung verbessern
-- [ ] HTTP Statuscode Handling sauber implementieren
-- [ ] Logging-Datei einbauen
-- [ ] JSON-Statistik im Sync-Output
-- [ ] Code-Refactoring
-- [ ] README finalisieren
-- [ ] Optional: einfache Auth-Simulation (API-Key)
-
-Ergebnis Tag 2:
-→ Sauber strukturiertes Integrations-Miniprojekt.
+**Ziel:** Produktionsnahes Verhalten simulieren
+ - [ ] Fehlerbehandlung verbessern
+ - [ ] HTTP Statuscode Handeling sauber implementieren
+ - [ ] cURL Requests
+ - [ ] Trennung von Business-Logik und Infrastruktur
+ - [ ] Logging & Fehlerbehandlung
 
 ---
 
-## Lernfokus
+## Dokumentation
 
-- PDO & Prepared Statements
-- JSON Encoding / Decoding
-- REST API Grundlagen
-- HTTP Statuscodes
-- cURL Requests
-- Trennung von Business-Logik und Infrastruktur
-- Logging & Fehlerbehandlung
+Technische Diagramme befinden sich im docs/ -ordner
 
 ---
 
-Autor: Perseus Palma Jacobs  
-Zeitrahmen: 2 Tage  
-Status: In Entwicklung
+**Autor:** Palma Jacobs Perseus
+**Zeitrahmen:** 2 Tage
+**Status:** In Entwicklung
