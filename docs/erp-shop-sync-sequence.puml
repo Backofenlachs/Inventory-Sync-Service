@@ -1,0 +1,34 @@
+@startuml
+actor Admin
+participant "Sync Service\n(sync.php)" as Sync
+participant "InventoryRepository\n(ERP DB)" as ERP
+participant "ApiClient" as Client
+participant "Shop API\n(/api/products)" as API
+database "Shop Database" as ShopDB
+
+Admin -> Sync : Trigger Sync
+
+Sync -> ERP : fetchAllProducts()
+ERP --> Sync : Product List
+
+loop For each product
+    Sync -> Client : POST /api/products (JSON)
+    Client -> API : HTTP Request
+    API -> ShopDB : Check SKU
+    ShopDB --> API : Exists / Not Exists
+    
+    alt Product exists
+        API -> ShopDB : UPDATE product
+        API --> Client : 200 OK
+    else New product
+        API -> ShopDB : INSERT product
+        API --> Client : 201 Created
+    end
+    
+    Client --> Sync : Status Code
+end
+
+Sync -> Sync : Log results
+Sync --> Admin : JSON Summary
+
+@enduml

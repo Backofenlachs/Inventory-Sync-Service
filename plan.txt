@@ -1,0 +1,117 @@
+Heute Abend (Planung)
+
+Ziel: Alles vorbereiten, damit du morgen direkt in die Umsetzung gehen kannst.
+
+Projektstruktur klar machen
+
+Alle Dateien/Ordner anlegen (src/, public/, config/, logs/)
+
+schema.sql überprüfen, ggf. Testdaten einfügen
+
+Sequence Diagram & UML prüfen
+
+docs/erp-shop-sync-sequence.puml fertigstellen
+
+Prüfen, dass es logisch konsistent ist
+
+To-Do-Liste schreiben
+
+Schritt-für-Schritt, z. B.:
+
+InventoryRepository
+
+ApiClient
+
+Shop API
+
+SyncService
+
+Logging / Summary
+
+Prioritäten setzen: was geht am schnellsten, was muss für Demo fertig sein
+
+
+
+🔹 Morgen – 7h Zugfahrt
+
+Ziel: Kernlogik implementieren
+
+InventoryRepository (ERP DB)
+
+PDO Verbindung
+
+fetchAllProducts() testen
+
+ApiClient
+
+POST JSON an Shop API
+
+Rückgabe Statuscode
+
+Shop API Endpoint
+
+JSON empfangen
+
+Prüfen SKU existiert → UPDATE / INSERT
+
+Statuscode zurückgeben
+
+Testlauf mit 2–3 Produkten
+
+Prüfen, dass alles zusammen funktioniert
+
+Tipp: Alles lokal testen (z. B. XAMPP oder Docker)
+
+
+
+🔹 Samstag – ganzer Tag
+
+Ziel: Feinschliff & Logging
+
+SyncService (sync.php)
+
+Loop über alle Produkte
+
+POST via ApiClient
+
+Statuscodes auswerten
+
+Logging
+
+sync.log
+
+JSON-Summary für Admin
+
+Code Cleanup
+
+Kommentare
+
+Struktur prüfen
+
+README ggf. anpassen
+
+End-Test
+
+Simuliere Admin-Trigger → Sync läuft korrekt
+
+🔹 Sonntag – unterwegs
+
+Ziel: E-Mail vorbereiten, kleine Fixes
+
+E-Mail schreiben
+
+Projekt kurz vorstellen (1–2 Absätze)
+
+Link zum Repository (oder ZIP)
+
+Fertigstellen, ready-to-send
+
+Optional kleine Fixes / Tests
+
+Wenn Internet verfügbar
+
+🔹 Montag 07:00 Uhr
+
+E-Mail automatisch verschicken
+
+Projekt ist vorzeigbar fertig
