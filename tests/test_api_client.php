@@ -18,7 +18,7 @@ function fail(string $message): void
 
 echo "Starte ApiClient Test" . PHP_EOL;
 
-$client = new ApiClient("http://localhost:8000");
+$client = new ApiClient("http://127.0.0.1:8001");
 
 try {
     // ---------- Test 1: gültiges Produkt ----------
