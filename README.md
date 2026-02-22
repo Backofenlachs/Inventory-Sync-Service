@@ -52,6 +52,7 @@ Der Sync-Prozess:
 - Logging in Datei
 - einfache Integrationstests
 - ADR-Dokumentation im `docs/adr` Ordner
+- `README_TECHNICAL.md` für technischere und umfangreichere dokumentationen
 
 ---
 
