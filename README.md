@@ -89,7 +89,6 @@ inventory-sync/
 └── README.md                    # Projektdokumentation
 ```
 
-
 ---
 
 ## Datenbankschema
@@ -107,14 +106,41 @@ inventory-sync/
 
 ## REST-API (simulierter Shop)
 
-### Endpoint
+### API Contract (Shop)
 
+**Endpoint**
 ```
-POST /api/products
+POST /api/products.php
+```
+
+**Headers**
+- `Content-Type: application/json`
+- `Accept: application/json` (optional)
+
+**Request Body (Minimal)**
+Pflichtfelder:
+- `external_id` (string) – eindeutige ID aus dem Quellsystem
+- `name` (string)
+- `price` (number)
+- `stock` (int)
+
+Optional:
+- `sku` (string|null)
+- `status` (string, default: "active")
+- `external_updated_at` (string|null, ISO/DATETIME)
+
+Beispiel:
+```json
+{
+  "external_id": "PLANT-001",
+  "name": "Lavandula angustifolia",
+  "sku": "SKU-PLANT-001",
+  "price": 8.90,
+  "stock": 25
+}
 ```
 
 ### JSON Payload
-
 ```json
 {
   "sku": "PLANT-001",
@@ -127,9 +153,9 @@ POST /api/products
 ### Response Codes
 
  - **201 Created** – Neues Produkt angelegt
- - **200 OK** – Bestehendes Produkt aktualisiert
- - **400 Bad Request** – Validierungsfehler
- - **500 Internal Server Error** – Serverfehler
+ - **200 OK** – Bestehendes Produkt existiert bereits und wurde aktualisiert
+ - **400 Bad Request** – Validierungsfehler: JSON ungültig oder Pflichtfelder fehlen
+ - **500 Internal Server Error** – Serverfehler: Interner Fehler (z.B. DB)
 
 ---
 
@@ -142,6 +168,47 @@ Für jedes ERP-Produkt:
  3. Response prüfen
  4. Logging durchführen
  5. Statistik erfassen (created, updated, failed)
+
+---
+
+## Dokumentation
+
+Technische Diagramme befinden sich im docs/ -ordner
+
+---
+
+## Setup
+(setup_database.sh + Voraussetzungen)
+
+```markdown
+## Setup (Ubuntu)
+
+### Voraussetzungen
+- MySQL Server (oder MariaDB)
+- PHP 8+
+- PHP MySQL Extension (`php-mysql`)
+- PHP cURL Extension (`php-curl`) für HTTP Requests
+```
+
+Installation (Beispiel):
+```bash
+sudo apt update
+sudo apt install -y mysql-server php php-mysql php-curl
+```
+
+---
+
+
+```markdown
+### Dev Server starten (lokal)
+
+Zum lokalen Testen wird der PHP Built-in Server verwendet. Der Document Root ist `public/`, damit nur öffentliche Endpoints erreichbar sind.
+
+Start:
+```bash
+chmod +x bin/start_server.sh
+./bin/start_server.sh
+```
 
 ---
 
@@ -170,12 +237,6 @@ Für jedes ERP-Produkt:
  - [ ] cURL Requests
  - [ ] Trennung von Business-Logik und Infrastruktur
  - [ ] Logging & Fehlerbehandlung
-
----
-
-## Dokumentation
-
-Technische Diagramme befinden sich im docs/ -ordner
 
 ---
 
