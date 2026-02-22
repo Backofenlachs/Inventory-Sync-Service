@@ -44,7 +44,7 @@ else
     exit 1
 fi
 
-# 4️⃣ Testprodukt einfügen (optional)
+# Testprodukt einfügen (optional)
 echo "Füge Testprodukt ein..."
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "
 INSERT INTO products (external_id, name, sku, price, stock)
